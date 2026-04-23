@@ -1,13 +1,36 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Dilemma {
+  id          String   @id @default(cuid()) 
+  title       String
+  description String   @db.Text
+  theme       String   
+  options     Option[] 
+  createdAt   DateTime @default(now())
+}
+
+model Option {
+  id               String   @id @default(cuid())
+  text             String
+  budgetImpact     Float    
+  approvalImpact   Int      
+  
+  dilemma          Dilemma  @relation(fields: [dilemmaId], references: [id])
+  dilemmaId        String   // Continua sendo String para bater com o ID do Dilema
+}
+
+model Leaderboard {
+  id               String   @id @default(cuid())
+  playerName       String
+  monthsSurvived   Int
+  finalBudget      Float
+  finalApproval    Int
+  createdAt        DateTime @default(now())
 }
