@@ -23,7 +23,7 @@ model Option {
   approvalImpact   Int      
   
   dilemma          Dilemma  @relation(fields: [dilemmaId], references: [id])
-  dilemmaId        String   // Continua sendo String para bater com o ID do Dilema
+  dilemmaId        String   
 }
 
 model Leaderboard {
