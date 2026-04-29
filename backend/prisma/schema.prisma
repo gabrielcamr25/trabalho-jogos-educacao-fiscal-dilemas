@@ -29,6 +29,7 @@ model Option {
 model Leaderboard {
   id               String   @id @default(cuid())
   playerName       String
+  cityName         String
   monthsSurvived   Int
   finalBudget      Float
   finalApproval    Int
