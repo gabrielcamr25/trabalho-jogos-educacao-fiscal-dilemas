@@ -5,10 +5,11 @@ import * as LeaderboardService from './leaderboard.service';
 export const createScore = async (req: Request, res: Response) => {
   try {
    
-    const { playerName, monthsSurvived, finalBudget, finalApproval } = req.body;
+    const { playerName, cityName, monthsSurvived, finalBudget, finalApproval } = req.body;
     
     const newEntry = await LeaderboardService.saveScore(
       playerName, 
+      cityName,
       monthsSurvived, 
       finalBudget, 
       finalApproval
