@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HelpCircle, Settings } from 'lucide-react';
 
+
 import bgImage from '../../assets/background-img-home.png';
 import bgBlue from '../../assets/background-img-blue.png';
 
@@ -12,7 +13,8 @@ export function Home() {
   const handleStartGame = (e: React.FormEvent) => {
     e.preventDefault();
     if (playerName) {
-      navigate('/game', { state: { playerName, cityName: 'Sua Cidade' } });
+    
+      navigate('/welcome', { state: { playerName } });
     }
   };
 
@@ -22,45 +24,34 @@ export function Home() {
       style={{ 
         backgroundImage: `url(${bgImage}), url(${bgBlue})`,
         backgroundPosition: 'center bottom, center center',
- 
-        backgroundSize: '100% auto, cover',
+        backgroundSize: '100% auto, cover', 
         backgroundRepeat: 'no-repeat, no-repeat'
       }}
     >
+
       <div className="absolute top-0 w-full p-6 flex justify-end gap-4 z-10">
-        <button 
-          className="text-white hover:text-gray-200 hover:opacity-80 transition-all cursor-pointer"
-          onClick={() => alert('Modal de Tutorial em breve!')}
-        >
+        <button className="text-white hover:opacity-80 transition-all cursor-pointer">
           <HelpCircle size={28} strokeWidth={1.5} />
         </button>
-        <button 
-          className="text-white hover:text-gray-200 hover:opacity-80 transition-all cursor-pointer"
-          onClick={() => alert('Painel de Configurações em breve!')}
-        >
+        <button className="text-white hover:opacity-80 transition-all cursor-pointer">
           <Settings size={28} strokeWidth={1.5} />
         </button>
       </div>
 
-    
-      <div className="z-10 flex flex-col items-center px-4 w-full">
-        
 
+      <div className="z-10 flex flex-col items-center px-4 w-full">
         <div className="text-center mb-[48px]">
-    
           <h1 className="font-light text-[40px] text-white tracking-[-0.5px] mb-[8px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] leading-none">
             Bem-vindo ao
           </h1>
-       
           <h2 className="font-bold text-[48px] text-white tracking-[-0.5px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] leading-none">
             Dilemas do Gestor
           </h2>
         </div>
 
-    
         <form 
           onSubmit={handleStartGame} 
-          className="inline-flex shadow-[0_2px_8px_rgba(0,0,0,0.12)] rounded-[8px]"
+          className="inline-flex shadow-[0_2px_8px_rgba(0,0,0,0.12)] rounded-[8px] overflow-hidden"
         >
           <input 
             type="text" 
@@ -77,7 +68,6 @@ export function Home() {
             Avançar
           </button>
         </form>
-
       </div>
     </div>
   );
