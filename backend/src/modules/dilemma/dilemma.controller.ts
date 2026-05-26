@@ -14,8 +14,8 @@ export const listDilemmas = async (req: Request, res: Response) => {
 
 export const startGameDeck = async (req: Request, res: Response) => {
   try {
-    // Pede 8 cartas pro Service (se quiser mais rodadas, é só mudar o número aqui)
-    const deck = await DilemmaService.getGameDeck(8);
+
+    const deck = await DilemmaService.getGameDeck(48);
     res.json(deck);
   } catch (error) {
     console.error(error);
