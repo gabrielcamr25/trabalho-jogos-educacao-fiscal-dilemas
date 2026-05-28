@@ -48,12 +48,12 @@ export function Welcome() {
     
       <div className="z-10 flex flex-col items-center px-4 pt-[22vh]">
        
-        <div className="max-w-[600px] text-center animate-fade-in-up">
-          <p className="text-white text-[22px] md:text-[26px] font-normal leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] mb-6">
-            Parabéns, <span className="font-medium capitalize">{playerName}</span>! A população de Ratanabá confiou a você a liderança da cidade.
+        <div className="max-w-[820px] text-center animate-fade-in-up">
+          <p className="text-white text-[18px] sm:text-[20px] md:text-[24px] font-normal leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] mb-5">
+            Parabéns, <span className="font-medium capitalize">{playerName}</span>! Ratanabá acaba de entregar a você a responsabilidade de conduzir a cidade em um momento decisivo.
           </p>
-          <p className="text-white text-[22px] md:text-[26px] font-normal leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
-            Agora, prepare seu plano de ação para enfrentar os desafios urbanos.
+          <p className="text-white text-[18px] sm:text-[20px] md:text-[24px] font-normal leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+            Seu mandato começa com R$ 100.000 em caixa público, 50% de aprovação popular e decisões que vão exigir equilíbrio entre responsabilidade fiscal, transparência e bem-estar social.
           </p>
         </div>
 

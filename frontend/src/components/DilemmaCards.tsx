@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface Option {
   id: string;
   text: string;

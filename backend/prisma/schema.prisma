@@ -12,13 +12,14 @@ model Dilemma {
   title       String
   description String   @db.Text
   theme       String   
+  difficulty  String   @default("EASY")
   options     Option[] 
   createdAt   DateTime @default(now())
 }
 
 model Option {
   id               String   @id @default(cuid())
-  text             String
+  text             String   @db.Text
   budgetImpact     Float    
   approvalImpact   Int      
   

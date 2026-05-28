@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { startGameDeck } from '../../services/api';
 
 import { HeaderStatus } from '../../components/HeaderStatus';
@@ -30,6 +31,265 @@ interface ImprovementOption {
   icon: string;
 }
 
+interface ImprovementTemplate {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+const INITIAL_BUDGET = 100000;
+const INITIAL_APPROVAL = 50;
+
+const INVESTMENT_TIERS = [
+  { minCost: 6000, maxCost: 10000, minApprovalBonus: 3, maxApprovalBonus: 5 },
+  { minCost: 15000, maxCost: 25000, minApprovalBonus: 5, maxApprovalBonus: 7 },
+  { minCost: 25000, maxCost: 50000, minApprovalBonus: 7, maxApprovalBonus: 12 }
+] as const;
+
+const ROUND_INVESTMENTS: ImprovementTemplate[][] = [
+  [
+    {
+      id: 'fiscal',
+      title: 'Educação Fiscal',
+      description: 'Conscientização nas escolas sobre a função social dos tributos arrecadados.',
+      icon: '📚'
+    },
+    {
+      id: 'saude-posto',
+      title: 'Ampliar Posto',
+      description: 'Médicos especialistas e vans móveis para agilizar atendimentos locais.',
+      icon: '🏥'
+    },
+    {
+      id: 'infra-pavimentacao',
+      title: 'Infraestrutura',
+      description: 'Obras de pavimentação, asfalto novo e modernização para iluminação LED.',
+      icon: '🚧'
+    }
+  ],
+  [
+    {
+      id: 'ouvidoria',
+      title: 'Ouvidoria Cidadã',
+      description: 'Canal digital para registrar demandas, acompanhar protocolos e medir satisfação.',
+      icon: '📣'
+    },
+    {
+      id: 'creche',
+      title: 'Vagas em Creche',
+      description: 'Abertura de turmas extras e contratação temporária para reduzir a fila infantil.',
+      icon: '🧸'
+    },
+    {
+      id: 'saneamento',
+      title: 'Rede de Saneamento',
+      description: 'Ampliação de esgoto tratado em bairros com maior risco sanitário.',
+      icon: '🚰'
+    }
+  ],
+  [
+    {
+      id: 'portal-transparencia',
+      title: 'Portal Aberto',
+      description: 'Publicação clara de contratos, despesas e indicadores para controle social.',
+      icon: '🧾'
+    },
+    {
+      id: 'transporte-escolar',
+      title: 'Transporte Escolar',
+      description: 'Revisão de rotas, manutenção da frota e reforço para estudantes da zona rural.',
+      icon: '🚌'
+    },
+    {
+      id: 'drenagem',
+      title: 'Drenagem Urbana',
+      description: 'Limpeza de galerias e obras em pontos críticos de alagamento.',
+      icon: '🌧️'
+    }
+  ],
+  [
+    {
+      id: 'mutirao-iptu',
+      title: 'Mutirão do IPTU',
+      description: 'Atendimento orientado para regularização, isenção correta e negociação de débitos.',
+      icon: '🏠'
+    },
+    {
+      id: 'ubs-digital',
+      title: 'UBS Digital',
+      description: 'Agendamento online, prontuário integrado e triagem para reduzir filas.',
+      icon: '💻'
+    },
+    {
+      id: 'praca-segura',
+      title: 'Praça Segura',
+      description: 'Iluminação, câmeras comunitárias e reforma de áreas públicas de convivência.',
+      icon: '💡'
+    }
+  ],
+  [
+    {
+      id: 'coleta-seletiva',
+      title: 'Coleta Seletiva',
+      description: 'Ecobairros, cooperativas e pontos de entrega voluntária para resíduos recicláveis.',
+      icon: '♻️'
+    },
+    {
+      id: 'merenda',
+      title: 'Merenda de Qualidade',
+      description: 'Compra local, cardápio nutricional e fiscalização do abastecimento escolar.',
+      icon: '🍽️'
+    },
+    {
+      id: 'ponte-rural',
+      title: 'Ponte Rural',
+      description: 'Recuperação de acesso usado por produtores, estudantes e equipes de saúde.',
+      icon: '🌉'
+    }
+  ],
+  [
+    {
+      id: 'capacitacao-servidores',
+      title: 'Capacitar Servidores',
+      description: 'Treinamento em atendimento, compras públicas, ética e gestão por resultados.',
+      icon: '🎓'
+    },
+    {
+      id: 'guarda-comunitaria',
+      title: 'Guarda Comunitária',
+      description: 'Rondas preventivas em escolas, feiras e terminais com foco em mediação.',
+      icon: '🛡️'
+    },
+    {
+      id: 'centro-reabilitacao',
+      title: 'Centro de Reabilitação',
+      description: 'Serviços de fisioterapia e acompanhamento para reduzir viagens a outras cidades.',
+      icon: '🩺'
+    }
+  ],
+  [
+    {
+      id: 'feira-empreendedor',
+      title: 'Feira do Empreendedor',
+      description: 'Apoio a pequenos negócios, formalização e educação financeira local.',
+      icon: '🛍️'
+    },
+    {
+      id: 'biblioteca-viva',
+      title: 'Biblioteca Viva',
+      description: 'Ampliação do acervo, oficinas culturais e espaço de estudo no contraturno.',
+      icon: '📖'
+    },
+    {
+      id: 'terminal-integrado',
+      title: 'Terminal Integrado',
+      description: 'Reorganização de linhas, abrigos cobertos e acessibilidade no transporte público.',
+      icon: '🚏'
+    }
+  ],
+  [
+    {
+      id: 'hortas-urbanas',
+      title: 'Hortas Urbanas',
+      description: 'Uso de terrenos públicos para produção comunitária e educação ambiental.',
+      icon: '🌱'
+    },
+    {
+      id: 'farmacia-basica',
+      title: 'Farmácia Básica',
+      description: 'Reposição estratégica de medicamentos essenciais e controle de estoque.',
+      icon: '💊'
+    },
+    {
+      id: 'habita-ratanaba',
+      title: 'Habitação Social',
+      description: 'Projeto de moradia digna com prioridade para famílias em área de risco.',
+      icon: '🏘️'
+    }
+  ],
+  [
+    {
+      id: 'auditoria-contratos',
+      title: 'Auditoria de Contratos',
+      description: 'Revisão de contratos ativos para cortar desperdícios e aumentar confiança pública.',
+      icon: '🔎'
+    },
+    {
+      id: 'esporte-bairros',
+      title: 'Esporte nos Bairros',
+      description: 'Equipamentos, monitores e torneios comunitários para jovens no contraturno.',
+      icon: '🏀'
+    },
+    {
+      id: 'hospital-dia',
+      title: 'Hospital Dia',
+      description: 'Estrutura para procedimentos de baixa complexidade e desafogamento da rede.',
+      icon: '🏥'
+    }
+  ],
+  [
+    {
+      id: 'regularizacao-fundiaria',
+      title: 'Regularização Fundiária',
+      description: 'Mutirão jurídico e técnico para entregar segurança de posse a famílias vulneráveis.',
+      icon: '📄'
+    },
+    {
+      id: 'defesa-civil',
+      title: 'Defesa Civil',
+      description: 'Mapeamento de risco, alertas preventivos e kits emergenciais para enchentes.',
+      icon: '🚨'
+    },
+    {
+      id: 'parque-linear',
+      title: 'Parque Linear',
+      description: 'Recuperação ambiental de córrego urbano com lazer, drenagem e arborização.',
+      icon: '🌳'
+    }
+  ],
+  [
+    {
+      id: 'conselhos-populares',
+      title: 'Conselhos Populares',
+      description: 'Fortalecimento de reuniões públicas para priorizar obras e fiscalizar serviços.',
+      icon: '🤝'
+    },
+    {
+      id: 'laboratorio-inovacao',
+      title: 'Laboratório Público',
+      description: 'Equipe para simplificar serviços, automatizar processos e reduzir filas.',
+      icon: '🧪'
+    },
+    {
+      id: 'anel-viario',
+      title: 'Anel Viário',
+      description: 'Intervenção de mobilidade para tirar tráfego pesado do centro da cidade.',
+      icon: '🛣️'
+    }
+  ],
+  [
+    {
+      id: 'prestacao-contas',
+      title: 'Prestação de Contas',
+      description: 'Audiências de encerramento com indicadores, metas cumpridas e próximos desafios.',
+      icon: '📊'
+    },
+    {
+      id: 'plano-diretor',
+      title: 'Plano Diretor',
+      description: 'Revisão participativa do crescimento urbano, zoneamento e proteção ambiental.',
+      icon: '🗺️'
+    },
+    {
+      id: 'complexo-educacional',
+      title: 'Complexo Educacional',
+      description: 'Escola em tempo integral com esporte, cultura, tecnologia e apoio pedagógico.',
+      icon: '🏫'
+    }
+  ]
+];
+
 export function Game() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,13 +299,13 @@ export function Game() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); 
   const [loading, setLoading] = useState(true);
 
-  const [budget, setBudget] = useState(50000); 
-  const [approval, setApproval] = useState(50); 
+  const [budget, setBudget] = useState(INITIAL_BUDGET); 
+  const [approval, setApproval] = useState(INITIAL_APPROVAL); 
   const [showImprovement, setShowImprovement] = useState(false);
   const [purchasedImprovements, setPurchasedImprovements] = useState<any[]>([]);
 
   const [history, setHistory] = useState<any[]>([
-    { name: 'Início', Caixa: 50000, Aprovação: 50 }
+    { name: 'Início', Caixa: INITIAL_BUDGET, Aprovação: INITIAL_APPROVAL }
   ]);
 
   useEffect(() => {
@@ -64,32 +324,18 @@ export function Game() {
       return Math.round(min + ((max - min) / 11) * (round - 1));
     };
 
-    return [
-      {
-        id: 'fiscal',
-        title: 'Educação Fiscal',
-        description: 'Conscientização nas escolas sobre a função social dos tributos arrecadados.',
-        cost: scaleValue(6000, 10000),
-        approvalBonus: scaleValue(3, 5),
-        icon: '📚'
-      },
-      {
-        id: 'saude',
-        title: 'Ampliar Posto',
-        description: 'Médicos especialistas e vans móveis para agilizar atendimentos locais.',
-        cost: scaleValue(15000, 25000),
-        approvalBonus: scaleValue(5, 7),
-        icon: '🏥'
-      },
-      {
-        id: 'infra',
-        title: 'Infraestrutura',
-        description: 'Obras de pavimentação, asfalto novo e modernização para iluminação LED.',
-        cost: scaleValue(25000, 50000),
-        approvalBonus: scaleValue(7, 12),
-        icon: '🚧'
-      }
-    ];
+    const templates = ROUND_INVESTMENTS[(round - 1) % ROUND_INVESTMENTS.length];
+
+    return templates.map((template, index) => {
+      const tier = INVESTMENT_TIERS[index];
+
+      return {
+        ...template,
+        id: `${template.id}-round-${round}`,
+        cost: scaleValue(tier.minCost, tier.maxCost),
+        approvalBonus: scaleValue(tier.minApprovalBonus, tier.maxApprovalBonus)
+      };
+    });
   };
 
   const handleChoice = (budgetImpact: number, approvalImpact: number) => {
@@ -342,9 +588,10 @@ export function Game() {
               <div className="w-full text-center mt-3 pt-2 border-t border-gray-100 shrink-0">
                 <button
                   onClick={() => setShowImprovement(false)}
-                  className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold text-[11px] rounded-xl transition-all shadow-inner"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-blue-700 bg-blue-600 px-7 py-2.5 text-[12px] font-black tracking-wide text-white shadow-md shadow-blue-600/25 transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-200"
                 >
                   Poupar Recursos e Avançar
+                  <ArrowRight size={15} strokeWidth={3} aria-hidden="true" />
                 </button>
               </div>
 

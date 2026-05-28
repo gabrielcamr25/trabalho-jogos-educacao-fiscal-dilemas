@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HelpCircle, Settings } from 'lucide-react';
 
 
 import bgImage from '../../assets/background-img-home.png';
@@ -28,16 +27,6 @@ export function Home() {
         backgroundRepeat: 'no-repeat, no-repeat'
       }}
     >
-
-      <div className="absolute top-0 w-full p-6 flex justify-end gap-4 z-10">
-        <button className="text-white hover:opacity-80 transition-all cursor-pointer">
-          <HelpCircle size={28} strokeWidth={1.5} />
-        </button>
-        <button className="text-white hover:opacity-80 transition-all cursor-pointer">
-          <Settings size={28} strokeWidth={1.5} />
-        </button>
-      </div>
-
 
       <div className="z-10 flex flex-col items-center px-4 w-full">
         <div className="text-center mb-[48px]">
