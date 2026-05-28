@@ -1,62 +1,63 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+import bgImage from '../../assets/background-img-home.png';
+import bgBlue from '../../assets/background-img-blue.png';
+
 export function Home() {
   const [playerName, setPlayerName] = useState('');
-  const [cityName, setCityName] = useState('');
   const navigate = useNavigate();
 
   const handleStartGame = (e: React.FormEvent) => {
     e.preventDefault();
-    if (playerName && cityName) {
-      navigate('/game', { state: { playerName, cityName } });
+    if (playerName) {
+    
+      navigate('/welcome', { state: { playerName } });
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4">
-      
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-slate-800 mb-2">Simulador de Gestão Pública</h1>
-        <p className="text-lg text-slate-600">Educação Fiscal e Cidadania</p>
-      </div>
-      
-      <form 
-        onSubmit={handleStartGame} 
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md flex flex-col gap-4"
-      >
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Nome do Prefeito</label>
+    <div 
+      className="relative min-h-screen w-full flex items-start justify-center pt-40 md:pt-52"
+      style={{ 
+        backgroundImage: `url(${bgImage}), url(${bgBlue})`,
+        backgroundPosition: 'center bottom, center center',
+        backgroundSize: '100% auto, cover', 
+        backgroundRepeat: 'no-repeat, no-repeat'
+      }}
+    >
+
+      <div className="z-10 flex flex-col items-center px-4 w-full">
+        <div className="text-center mb-[48px]">
+          <h1 className="font-light text-[40px] text-white tracking-[-0.5px] mb-[8px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] leading-none">
+            Bem-vindo ao
+          </h1>
+          <h2 className="font-bold text-[48px] text-white tracking-[-0.5px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.15)] leading-none">
+            Dilemas do Gestor
+          </h2>
+        </div>
+
+        <form 
+          onSubmit={handleStartGame} 
+          className="inline-flex shadow-[0_2px_8px_rgba(0,0,0,0.12)] rounded-[8px] overflow-hidden"
+        >
           <input 
             type="text" 
-            placeholder="Ex: Gabriel Câmara" 
+            placeholder="Digite seu nome..." 
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
             required
-            className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-[240px] h-[48px] px-[16px] border-none outline-none bg-[#F3F4F6] text-[16px] text-[#1F2937] placeholder-[#9CA3AF] rounded-l-[8px]"
           />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Nome da Cidade</label>
-          <input 
-            type="text" 
-            placeholder="Ex: Fortaleza" 
-            value={cityName}
-            onChange={(e) => setCityName(e.target.value)}
-            required
-            className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          className="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 shadow-md"
-        >
-          Assumir a Prefeitura
-        </button>
-      </form>
-
+          <button 
+            type="submit" 
+            className="h-[48px] px-[24px] border-none bg-[#D4E157] text-[#1F2937] text-[16px] font-medium cursor-pointer rounded-r-[8px] transition-all duration-200 hover:bg-[#C5D64A] hover:-translate-y-[1px]"
+          >
+            Avançar
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
